@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusBazar - Checkout</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="page-checkout">
+    <nav class="navbar">
+        <div class="logo">CampusBazar.</div>
+        <div class="nav-links">
+            <button id="theme-toggle" class="btn-icon"><i class="fa-solid fa-moon"></i></button>
+            <a href="index.html" class="btn-outline">← Back to Home</a>
+        </div>
+    </nav>
+
+    <div class="checkout-section">
+        <h2><i class="fa-solid fa-shopping-cart"></i> Confirm Order</h2>
+        
+        <div style="background: var(--bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 1.5rem;">
+            <h3 id="checkout-title" style="margin-bottom: 0.5rem;">Product Name</h3>
+            <p style="color: var(--text-muted);">Type: <span id="checkout-type">Purchase</span></p>
+            <p style="color: var(--primary); font-size: 1.3rem; font-weight: bold; margin-top: 0.5rem;" id="checkout-price">₹0</p>
+        </div>
+
+        <!-- Delivery Information (Auto-filled from profile) -->
+        <div class="card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3><i class="fa-solid fa-location-dot"></i> Delivery Location</h3>
+                <a href="profile.html?tab=profile" class="btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                    <i class="fa-solid fa-edit"></i> Change
+                </a>
+            </div>
+            
+            <div id="delivery-info" class="profile-info-grid">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Additional Notes -->
+        <div class="card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+            <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-note-sticky"></i> Additional Instructions (Optional)</h3>
+            <textarea id="additional-notes" rows="3" placeholder="Any special instructions for delivery or pickup..." style="width: 100%;"></textarea>
+        </div>
+
+        <button id="confirmOrderBtn" class="btn-primary" style="width: 100%; padding: 1rem; font-size: 1rem;">
+            <i class="fa-solid fa-check"></i> Confirm & Place Order
+        </button>
+
+        <div class="contact-info-section" style="margin-top: 2rem;">
+            <h3><i class="fa-solid fa-headset"></i> Need Help?</h3>
+            <div class="info-item">
+                <i class="fa-solid fa-envelope"></i>
+                <span>support@campusbazar.campus</span>
+            </div>
+            <div class="info-item">
+                <i class="fa-brands fa-whatsapp"></i>
+                <span>WhatsApp: +91 98765 43210</span>
+            </div>
+            <p style="color: var(--text-muted); margin-top: 1rem; font-size: 0.85rem;">
+                <i class="fa-solid fa-truck"></i> Delivery within campus • Pickup options available
+            </p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusBazar - Buy & Rent</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="page-home">
+    <nav class="navbar">
+        <div class="logo">CampusBazar.</div>
+        <div class="nav-links">
+            <button id="theme-toggle" class="btn-icon"><i class="fa-solid fa-moon"></i></button>
+            <a id="auth-link" href="login.html">Log In</a>
+            <a href="sell.html" class="btn-primary">+ Sell / Rent</a>
+        </div>
+    </nav>
+
+    <div class="hero-search">
+        <h1 style="margin-bottom: 1rem;">Buy or Rent Verified Goods</h1>
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass search-icon-left"></i>
+            <input type="text" id="searchInput" placeholder="Search (e.g. DSLR Camera, Gaming PC)...">
+            <button id="searchBtn" class="search-btn">Search</button>
+        </div>
+        
+        <div style="margin-top: 2rem; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
+            <button id="show-available" class="btn-primary" style="border-radius: 30px; padding: 0.8rem 1.5rem;">
+                <i class="fa-solid fa-shop"></i> Available Items
+            </button>
+            
+            <button id="show-wanted" class="btn-outline" style="border-radius: 30px; padding: 0.8rem 1.5rem; background: transparent; border: 1px solid var(--border);">
+                <i class="fa-solid fa-magnifying-glass-plus"></i> WantedList
+            </button>
+
+            <button onclick="window.location.href='profile.html?view=post-wanted'" class="btn-primary" style="border-radius: 30px; padding: 0.8rem 1.5rem; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-plus-circle"></i> Post a Request
+            </button>
+        </div>
+    </div>
+
+    <div class="grid" id="productGrid"></div>
+
+    <footer style="text-align: center; padding: 2rem; color: var(--text-muted); border-top: 1px solid var(--border); margin-top: 3rem;">
+        <p style="margin-bottom: 0.5rem;">© 2025 CampusBazar - Campus Marketplace Platform</p>
+        <p>
+            <a href="profile.html?view=about" style="color: var(--primary); text-decoration: none;">
+                <i class="fa-solid fa-info-circle"></i> About Us
+            </a>
+        </p>
+    </footer>
+
+    <div class="user-profile-btn" onclick="handleProfileClick()" title="Profile">
+        <i class="fa-solid fa-user"></i>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        const availableBtn = document.getElementById('show-available');
+        const wantedBtn = document.getElementById('show-wanted');
+        let currentView = 'available';
+
+        availableBtn.addEventListener('click', () => {
+            currentView = 'available';
+            availableBtn.className = "btn-primary";
+            availableBtn.style.background = "var(--primary)";
+            wantedBtn.className = "btn-outline";
+            wantedBtn.style.background = "transparent";
+            renderProducts(); 
+        });
+
+        wantedBtn.addEventListener('click', () => {
+            currentView = 'wanted';
+            wantedBtn.className = "btn-primary";
+            wantedBtn.style.background = "var(--primary)";
+            availableBtn.className = "btn-outline";
+            availableBtn.style.background = "transparent";
+            renderWantedItems();
+        });
+
+        // FIXED: This function now correctly renders those sample requests
+        function renderWantedItems(filter = "") {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = "";
+            
+            // Getting user-posted items + showing sample ones if empty
+            const userPosted = JSON.parse(localStorage.getItem('retrade_wanted_items')) || [];
+            const samples = [
+                { id: 's1', item: "Engineering Physics Textbook", budget: "400", user: "Rahul_CSE", desc: "Need the latest edition." },
+                { id: 's2', item: "Lab Coat (XL)", budget: "250", user: "Sneha_ECE", desc: "Looking for clean condition." }
+            ];
+            
+            const allWants = [...userPosted, ...samples];
+            
+            const filtered = allWants.filter(w => 
+                w.item.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            if(filtered.length === 0) {
+                grid.innerHTML = '<p style="text-align:center; color: var(--text-muted); grid-column: 1/-1; padding: 3rem;">No requests found</p>';
+                return;
+            }
+
+            filtered.forEach(w => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.borderLeft = "5px solid var(--primary)";
+                card.innerHTML = `
+                    <div class="card-body">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <h3 style="color: var(--primary)">${w.item}</h3>
+                            <span class="rent-tag" style="border-color: orange; color: orange;">WANTED</span>
+                        </div>
+                        <p style="margin: 10px 0; font-weight: bold;">Budget: ₹${w.budget}</p>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Posted by: ${w.user || 'Student'}</p>
+                        <button class="btn-primary" style="width: 100%;" onclick="window.location.href='profile.html?view=chat'">
+                            <i class="fa-solid fa-comments"></i> I have this!
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            if(currentView === 'wanted') {
+                renderWantedItems(e.target.value);
+            }
+        });
+    </script>
+</body>
+</html>

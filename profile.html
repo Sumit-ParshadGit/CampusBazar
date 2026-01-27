@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CampusBazar - Profile Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        /* Fix for active sidebar items - make text white and visible */
+        .sidebar li.active {
+            background: var(--primary) !important;
+            color: white !important;
+        }
+        
+        .sidebar li.active i {
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- SUB-COMPONENTS ---
+
+        const Dashboard = ({ user }) => (
+            <div>
+                <h2>Hello, {user?.name || 'Student'} 👋</h2>
+                <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'20px', marginTop:'20px'}}>
+                    <div className="card" style={{padding:'20px', textAlign:'center'}}>
+                        <h3>12</h3>
+                        <p style={{color:'var(--text-muted)'}}>Active Listings</p>
+                    </div>
+                    <div className="card" style={{padding:'20px', textAlign:'center'}}>
+                        <h3>₹45,000</h3>
+                        <p style={{color:'var(--text-muted)'}}>Total Sales</p>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const MyProfile = ({ 
+            user, 
+            editingProfile, 
+            setEditingProfile, 
+            profileData, 
+            handleInputChange, 
+            handleProfileUpdate 
+        }) => (
+            <div>
+                <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'1.5rem'}}>
+                    <h2>My Profile</h2>
+                    <button onClick={() => setEditingProfile(!editingProfile)} className="btn-outline">
+                        <i className={editingProfile ? "fa-solid fa-times" : "fa-solid fa-edit"}></i> 
+                        {editingProfile ? ' Cancel' : ' Edit Profile'}
+                    </button>
+                </div>
+
+                {editingProfile ? (
+                    <form onSubmit={handleProfileUpdate} className="card" style={{padding:'2rem'}}>
+                        <div className="form-group">
+                            <label>Full Name *</label>
+                            <input 
+                                type="text" 
+                                name="name" 
+                                value={profileData.name} 
+                                onChange={handleInputChange} 
+                                required 
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Roll Number *</label>
+                            <input 
+                                type="text" 
+                                name="rollNumber" 
+                                value={profileData.rollNumber} 
+                                onChange={handleInputChange} 
+                                required 
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Branch *</label>
+                            <select 
+                                name="branch" 
+                                value={profileData.branch} 
+                                onChange={handleInputChange} 
+                                required
+                            >
+                                <option value="">Select Branch</option>
+                                <option value="CSE">Computer Science & Engineering</option>
+                                <option value="ECE">Electronics & Communication</option>
+                                <option value="EE">Electrical Engineering</option>
+                                <option value="ME">Mechanical Engineering</option>
+                                <option value="CE">Civil Engineering</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div className="address-fields">
+                            <div className="form-group">
+                                <label>Hostel/Block *</label>
+                                <input 
+                                    type="text" 
+                                    name="hostel" 
+                                    value={profileData.hostel} 
+                                    onChange={handleInputChange} 
+                                    required 
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Room Number *</label>
+                                <input 
+                                    type="text" 
+                                    name="roomNumber" 
+                                    value={profileData.roomNumber} 
+                                    onChange={handleInputChange} 
+                                    required 
+                                />
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <label>Phone Number *</label>
+                            <input 
+                                type="tel" 
+                                name="phone" 
+                                value={profileData.phone} 
+                                onChange={handleInputChange} 
+                                required 
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Email</label>
+                            <input 
+                                type="email" 
+                                name="email" 
+                                value={profileData.email} 
+                                onChange={handleInputChange} 
+                                disabled
+                                style={{background: 'var(--bg)', cursor: 'not-allowed'}}
+                            />
+                        </div>
+                        <button type="submit" className="btn-primary" style={{width:'100%', marginTop:'1rem'}}>
+                            <i className="fa-solid fa-save"></i> Save Changes
+                        </button>
+                    </form>
+                ) : (
+                    <div className="card" style={{padding:'2rem'}}>
+                        <div className="profile-info-grid">
+                            <div className="info-item">
+                                <i className="fa-solid fa-user"></i>
+                                <div>
+                                    <span className="info-label">Full Name</span>
+                                    <span className="info-value">{user?.name || 'Not Set'}</span>
+                                </div>
+                            </div>
+                            <div className="info-item">
+                                <i className="fa-solid fa-id-card"></i>
+                                <div>
+                                    <span className="info-label">Roll Number</span>
+                                    <span className="info-value">{user?.rollNumber || 'Not Set'}</span>
+                                </div>
+                            </div>
+                            <div className="info-item">
+                                <i className="fa-solid fa-graduation-cap"></i>
+                                <div>
+                                    <span className="info-label">Branch</span>
+                                    <span className="info-value">{user?.branch || 'Not Set'}</span>
+                                </div>
+                            </div>
+                            <div className="info-item">
+                                <i className="fa-solid fa-building"></i>
+                                <div>
+                                    <span className="info-label">Hostel/Block</span>
+                                    <span className="info-value">{user?.hostel || 'Not Set'}</span>
+                                </div>
+                            </div>
+                            <div className="info-item">
+                                <i className="fa-solid fa-door-open"></i>
+                                <div>
+                                    <span className="info-label">Room Number</span>
+                                    <span className="info-value">{user?.roomNumber || 'Not Set'}</span>
+                                </div>
+                            </div>
+                            <div className="info-item">
+                                <i className="fa-solid fa-phone"></i>
+                                <div>
+                                    <span className="info-label">Phone</span>
+                                    <span className="info-value">{user?.phone || 'Not Set'}</span>
+                                </div>
+                            </div>
+                            <div className="info-item">
+                                <i className="fa-solid fa-envelope"></i>
+                                <div>
+                                    <span className="info-label">Email</span>
+                                    <span className="info-value">{user?.email || 'Not Set'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+
+        const PostRequestForm = ({ user, setTab }) => {
+            const [newItem, setNewItem] = useState({ item: '', budget: '', desc: '' });
+
+            const postRequest = () => {
+                if(!newItem.item) {
+                    alert('Please enter what you need');
+                    return;
+                }
+                const existing = JSON.parse(localStorage.getItem('retrade_wanted_items')) || [];
+                const request = { 
+                    ...newItem, 
+                    id: Date.now(), 
+                    user: user?.name || 'Student' 
+                };
+                const updatedWants = [request, ...existing];
+                localStorage.setItem('retrade_wanted_items', JSON.stringify(updatedWants));
+                setNewItem({ item: '', budget: '', desc: '' });
+                alert("Posted to WantedList! 📢");
+                setTab('wanted');
+            };
+
+            return (
+                <div>
+                    <h2>Post a Request</h2>
+                    <p style={{color: 'var(--text-muted)', marginBottom: '1.5rem'}}>
+                        Tell the campus community what you are looking for.
+                    </p>
+                    
+                    <div className="card" style={{padding:'1.5rem', marginBottom:'2rem', background: 'rgba(56, 189, 248, 0.05)'}}>
+                        <h3 style={{marginBottom: '1rem'}}><i className="fa-solid fa-bullhorn"></i> New Request Details</h3>
+                        
+                        <div className="form-group">
+                            <label>What do you need? *</label>
+                            <input 
+                                type="text"
+                                value={newItem.item} 
+                                onChange={e => setNewItem({...newItem, item: e.target.value})} 
+                                placeholder="e.g. Lab Coat, Graphics Tablet..." 
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Budget (₹)</label>
+                            <input 
+                                type="text"
+                                value={newItem.budget} 
+                                onChange={e => setNewItem({...newItem, budget: e.target.value})} 
+                                placeholder="Estimated price you can pay" 
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Details</label>
+                            <textarea 
+                                value={newItem.desc} 
+                                onChange={e => setNewItem({...newItem, desc: e.target.value})} 
+                                placeholder="Additional information..."
+                                rows="3"
+                            />
+                        </div>
+
+                        <button onClick={postRequest} className="btn-primary" style={{width:'100%', marginTop:'1rem'}}>
+                            <i className="fa-solid fa-paper-plane"></i> Post Request
+                        </button>
+                    </div>
+
+                    <div style={{background: 'var(--bg)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border)'}}>
+                        <h4 style={{marginBottom: '0.75rem', color: 'var(--primary)'}}>
+                            <i className="fa-solid fa-lightbulb"></i> Tips for better responses:
+                        </h4>
+                        <ul style={{paddingLeft: '1.5rem', color: 'var(--text-muted)', lineHeight: '1.8'}}>
+                            <li>Be specific about what you need</li>
+                            <li>Mention condition preferences (new, used, etc.)</li>
+                            <li>Set a realistic budget</li>
+                            <li>Add any urgency or deadline information</li>
+                        </ul>
+                    </div>
+                </div>
+            );
+        };
+
+        const WantedList = ({ user }) => {
+            const [wants, setWants] = useState(JSON.parse(localStorage.getItem('retrade_wanted_items')) || []);
+            const [deleteMode, setDeleteMode] = useState(false);
+            const [selectedItems, setSelectedItems] = useState([]);
+
+            const removeItem = (itemId) => {
+                if(confirm('Are you sure you want to remove this request?')) {
+                    const updatedWants = wants.filter(w => w.id !== itemId);
+                    setWants(updatedWants);
+                    localStorage.setItem('retrade_wanted_items', JSON.stringify(updatedWants));
+                    alert('Request removed successfully!');
+                }
+            };
+
+            const toggleDeleteMode = () => {
+                setDeleteMode(!deleteMode);
+                setSelectedItems([]);
+            };
+
+            const toggleSelectItem = (itemId) => {
+                if(selectedItems.includes(itemId)) {
+                    setSelectedItems(selectedItems.filter(id => id !== itemId));
+                } else {
+                    setSelectedItems([...selectedItems, itemId]);
+                }
+            };
+
+            const selectAllItems = () => {
+                const userItems = wants.filter(w => w.user === user?.name).map(w => w.id);
+                setSelectedItems(userItems);
+            };
+
+            const deselectAllItems = () => {
+                setSelectedItems([]);
+            };
+
+            const deleteSelectedItems = () => {
+                if(selectedItems.length === 0) {
+                    alert('Please select items to delete');
+                    return;
+                }
+                
+                if(confirm(`Are you sure you want to delete ${selectedItems.length} selected item(s)?`)) {
+                    const updatedWants = wants.filter(w => !selectedItems.includes(w.id));
+                    setWants(updatedWants);
+                    localStorage.setItem('retrade_wanted_items', JSON.stringify(updatedWants));
+                    setSelectedItems([]);
+                    setDeleteMode(false);
+                    alert(`${selectedItems.length} item(s) deleted successfully!`);
+                }
+            };
+
+            const deleteAllMyItems = () => {
+                const myItems = wants.filter(w => w.user === user?.name);
+                if(myItems.length === 0) {
+                    alert('You have no items to delete');
+                    return;
+                }
+
+                if(confirm(`Are you sure you want to delete ALL your ${myItems.length} item(s)? This action cannot be undone!`)) {
+                    const updatedWants = wants.filter(w => w.user !== user?.name);
+                    setWants(updatedWants);
+                    localStorage.setItem('retrade_wanted_items', JSON.stringify(updatedWants));
+                    setSelectedItems([]);
+                    setDeleteMode(false);
+                    alert('All your items deleted successfully!');
+                }
+            };
+
+            const myItemsCount = wants.filter(w => w.user === user?.name).length;
+
+            return (
+                <div>
+                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '10px'}}>
+                        <h2 style={{margin: 0}}>My WantedList Requests</h2>
+                        
+                        {myItemsCount > 0 && !deleteMode && (
+                            <button 
+                                onClick={toggleDeleteMode}
+                                className="btn-primary"
+                                style={{
+                                    background: '#f59e0b',
+                                    padding: '0.6rem 1.2rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px'
+                                }}
+                            >
+                                <i className="fa-solid fa-trash"></i>
+                                Delete Wanted Items
+                            </button>
+                        )}
+                    </div>
+
+                    {deleteMode && (
+                        <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '1rem'}}>
+                            <button 
+                                onClick={selectAllItems}
+                                className="btn-outline"
+                                style={{fontSize: '0.85rem', padding: '0.5rem 0.9rem'}}
+                            >
+                                <i className="fa-solid fa-check-double"></i> Select All
+                            </button>
+                            <button 
+                                onClick={deselectAllItems}
+                                className="btn-outline"
+                                style={{fontSize: '0.85rem', padding: '0.5rem 0.9rem'}}
+                            >
+                                <i className="fa-solid fa-times"></i> Deselect All
+                            </button>
+                            <button 
+                                onClick={deleteSelectedItems}
+                                className="btn-primary"
+                                style={{
+                                    background: 'var(--danger)',
+                                    fontSize: '0.85rem',
+                                    padding: '0.5rem 0.9rem'
+                                }}
+                            >
+                                <i className="fa-solid fa-trash-alt"></i> Delete Selected ({selectedItems.length})
+                            </button>
+                            <button 
+                                onClick={deleteAllMyItems}
+                                className="btn-primary"
+                                style={{
+                                    background: '#dc2626',
+                                    fontSize: '0.85rem',
+                                    padding: '0.5rem 0.9rem'
+                                }}
+                            >
+                                <i className="fa-solid fa-trash-can"></i> Delete All
+                            </button>
+                            <button 
+                                onClick={toggleDeleteMode}
+                                className="btn-outline"
+                                style={{fontSize: '0.85rem', padding: '0.5rem 0.9rem'}}
+                            >
+                                <i className="fa-solid fa-ban"></i> Cancel
+                            </button>
+                        </div>
+                    )}
+
+                    {deleteMode && myItemsCount > 0 && (
+                        <div style={{
+                            background: 'rgba(245, 158, 11, 0.1)',
+                            border: '1px solid #f59e0b',
+                            borderRadius: '8px',
+                            padding: '1rem',
+                            marginBottom: '1.5rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px'
+                        }}>
+                            <i className="fa-solid fa-info-circle" style={{color: '#f59e0b', fontSize: '1.2rem'}}></i>
+                            <span style={{color: 'var(--text)'}}>
+                                <strong>Delete Mode Active:</strong> Click on items to select/deselect them for deletion
+                            </span>
+                        </div>
+                    )}
+
+                    <div style={{display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '1rem'}}>
+                        {wants.length === 0 ? (
+                            <p style={{color: 'var(--text-muted)'}}>No active requests found.</p>
+                        ) : (
+                            wants.map(w => {
+                                const isMyItem = w.user === user?.name;
+                                const isSelected = selectedItems.includes(w.id);
+                                
+                                return (
+                                    <div 
+                                        key={w.id} 
+                                        className="card" 
+                                        style={{
+                                            padding:'1.5rem', 
+                                            borderLeft: '5px solid var(--primary)',
+                                            cursor: deleteMode && isMyItem ? 'pointer' : 'default',
+                                            background: isSelected ? 'rgba(239, 68, 68, 0.1)' : 'var(--card)',
+                                            border: isSelected ? '2px solid var(--danger)' : '1px solid var(--border)',
+                                            position: 'relative',
+                                            transition: 'all 0.2s ease'
+                                        }}
+                                        onClick={() => deleteMode && isMyItem && toggleSelectItem(w.id)}
+                                    >
+                                        {deleteMode && isMyItem && (
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '15px',
+                                                left: '15px',
+                                                width: '30px',
+                                                height: '30px',
+                                                borderRadius: '50%',
+                                                border: '2px solid var(--primary)',
+                                                background: isSelected ? 'var(--danger)' : 'var(--card)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                fontSize: '0.9rem',
+                                                color: 'white',
+                                                fontWeight: 'bold',
+                                                zIndex: 10
+                                            }}>
+                                                {isSelected && <i className="fa-solid fa-check"></i>}
+                                            </div>
+                                        )}
+
+                                        <div style={{
+                                            display: 'flex', 
+                                            justifyContent: 'space-between', 
+                                            alignItems: 'center',
+                                            marginLeft: deleteMode && isMyItem ? '45px' : '0'
+                                        }}>
+                                            <h3 style={{color:'var(--primary)'}}>{w.item}</h3>
+                                            <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                                                <span className="rent-tag" style={{borderColor: 'orange', color: 'orange'}}>WANTED</span>
+                                                {!deleteMode && isMyItem && (
+                                                    <button 
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            removeItem(w.id);
+                                                        }} 
+                                                        className="btn-icon"
+                                                        style={{color: 'var(--danger)', fontSize: '1.2rem'}}
+                                                        title="Remove Request"
+                                                    >
+                                                        <i className="fa-solid fa-trash"></i>
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <p style={{
+                                            marginTop: '10px',
+                                            marginLeft: deleteMode && isMyItem ? '45px' : '0'
+                                        }}>{w.desc}</p>
+                                        <div style={{
+                                            marginTop: '15px', 
+                                            display: 'flex', 
+                                            alignItems: 'center', 
+                                            gap: '10px',
+                                            flexWrap: 'wrap',
+                                            marginLeft: deleteMode && isMyItem ? '45px' : '0'
+                                        }}>
+                                            <div className="info-item" style={{padding: '5px 12px', background: 'var(--bg)'}}>
+                                                <i className="fa-solid fa-tag"></i>
+                                                <span>Budget: <strong>₹{w.budget || 'Open'}</strong></span>
+                                            </div>
+                                            <div className="info-item" style={{padding: '5px 12px', background: 'var(--bg)'}}>
+                                                <i className="fa-solid fa-user"></i>
+                                                <span>By: <strong>{w.user}</strong></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const Chat = () => {
+            const [messages, setMessages] = useState([
+                { text: "Is the iPhone available?", sender: "buyer" },
+                { text: "Yes, it is!", sender: "me" }
+            ]);
+            const [input, setInput] = useState("");
+
+            const sendMsg = () => {
+                if(!input.trim()) return;
+                setMessages([...messages, { text: input, sender: "me" }]);
+                setInput("");
+            };
+
+            const handleKeyPress = (e) => {
+                if(e.key === 'Enter') {
+                    e.preventDefault();
+                    sendMsg();
+                }
+            };
+
+            return (
+                <div>
+                    <h2>Messages</h2>
+                    <div className="chat-window">
+                        <div className="messages">
+                            {messages.map((m, i) => (
+                                <div key={i} className={`msg ${m.sender === 'me' ? 'sent' : 'received'}`}>
+                                    {m.text}
+                                </div>
+                            ))}
+                        </div>
+                        <div style={{display:'flex', padding:'10px', borderTop:'1px solid var(--border)'}}>
+                            <input 
+                                value={input} 
+                                onChange={e=>setInput(e.target.value)} 
+                                onKeyPress={handleKeyPress}
+                                placeholder="Type a message and press Enter..." 
+                                style={{flex: 1, padding: '0.8rem', background: 'var(--bg)', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: '6px'}}
+                            />
+                            <button onClick={sendMsg} className="btn-primary" style={{marginLeft:'10px'}}>Send</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const About = () => {
+            const developers = [
+                { name: "Sumit Parshad", email: "sumitp.cs.24@nitj.ac.in", role: "Lead Developer" },
+                { name: "Sudipto Bairagi", email: "sudiptob.cs.24@nitj.ac.in", role: "Backend Developer" },
+                { name: "Shubham Kumar", email: "shubhamk.cs.24@nitj.ac.in", role: "Frontend Developer" },
+                { name: "Amit Mallik", email: "amitm.ds.25@nitj.ac.in", role: "UI/UX Designer" }
+            ];
+
+            return (
+                <div>
+                    <h2><i className="fa-solid fa-info-circle"></i> About CampusBazar</h2>
+                    <div className="card" style={{padding: '2rem', marginTop: '1.5rem'}}>
+                        <p style={{fontSize: '1.1rem', color: 'var(--text)', marginBottom: '2rem', lineHeight: '1.6'}}>
+                            CampusBazar is a campus marketplace platform designed to help students buy, sell, and rent items within the campus community.
+                        </p>
+                        
+                        <h3 style={{color: 'var(--primary)', marginBottom: '1.5rem'}}>
+                            <i className="fa-solid fa-users"></i> Development Team
+                        </h3>
+                        
+                        <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem'}}>
+                            {developers.map((dev, i) => (
+                                <div key={i} className="card" style={{padding: '1.5rem', background: 'var(--bg)'}}>
+                                    <div style={{display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1rem'}}>
+                                        <div style={{
+                                            width: '60px', height: '60px', borderRadius: '50%',
+                                            background: 'linear-gradient(135deg, var(--primary), var(--accent))',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            fontSize: '1.5rem', color: 'white', fontWeight: 'bold'
+                                        }}>
+                                            {dev.name.charAt(0)}
+                                        </div>
+                                        <div>
+                                            <h4 style={{marginBottom: '0.25rem'}}>{dev.name}</h4>
+                                            <p style={{fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0}}>{dev.role}</p>
+                                        </div>
+                                    </div>
+                                    <div className="info-item">
+                                        <i className="fa-solid fa-envelope"></i>
+                                        <a href={`mailto:${dev.email}`} style={{color: 'var(--primary)', fontSize: '0.9rem'}}>
+                                            {dev.email}
+                                        </a>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div style={{marginTop: '2.5rem', padding: '1.5rem', background: 'var(--bg)', borderRadius: '8px'}}>
+                            <h4 style={{color: 'var(--primary)', marginBottom: '1rem'}}>
+                                <i className="fa-solid fa-graduation-cap"></i> Institution
+                            </h4>
+                            <p style={{fontSize: '1rem'}}><strong>Dr. B. R. Ambedkar National Institute of Technology Jalandhar</strong></p>
+                            <p style={{color: 'var(--text-muted)', fontSize: '0.9rem'}}>Punjab, India</p>
+                        </div>
+
+                        <div style={{marginTop: '2rem', textAlign: 'center', color: 'var(--text-muted)'}}>
+                            <p><i className="fa-solid fa-code"></i> Built with React • Version 1.0.0</p>
+                            <p>© 2025 CampusBazar. All rights reserved.</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        function ProfileApp() {
+            const [tab, setTab] = useState('dashboard');
+            const [user, setUser] = useState(JSON.parse(localStorage.getItem('retrade_user_data')) || null);
+            const [editingProfile, setEditingProfile] = useState(false);
+            
+            const [profileData, setProfileData] = useState({
+                name: user?.name || '',
+                rollNumber: user?.rollNumber || '',
+                branch: user?.branch || '',
+                hostel: user?.hostel || '',
+                roomNumber: user?.roomNumber || '',
+                phone: user?.phone || '',
+                email: user?.email || ''
+            });
+
+            useEffect(() => {
+                const params = new URLSearchParams(window.location.search);
+                const view = params.get('view');
+                if (view === 'chat') setTab('chat');
+                if (view === 'post-wanted') setTab('post-wanted');
+                if (view === 'about') setTab('about');
+            }, []);
+
+            const handleLogout = () => {
+                localStorage.removeItem('retrade_user_data');
+                window.location.href = "index.html";
+            };
+
+            const handleProfileUpdate = (e) => {
+                e.preventDefault();
+                const updatedUser = { ...profileData };
+                localStorage.setItem('retrade_user_data', JSON.stringify(updatedUser));
+                setUser(updatedUser);
+                setEditingProfile(false);
+                alert('Profile updated successfully!');
+            };
+
+            const handleInputChange = (e) => {
+                setProfileData({
+                    ...profileData,
+                    [e.target.name]: e.target.value
+                });
+            };
+
+            return (
+                <div>
+                    <nav className="navbar">
+                        <div className="logo">CampusBazar Profile</div>
+                        <div className="nav-links">
+                            <button id="theme-toggle" className="btn-icon"><i className="fa-solid fa-moon"></i></button>
+                            <a href="index.html" className="btn-outline">Back to Home</a>
+                            <button onClick={handleLogout} className="btn-icon"><i className="fa-solid fa-right-from-bracket"></i></button>
+                        </div>
+                    </nav>
+                    <div className="dashboard-layout">
+                        <div className="sidebar">
+                            <ul>
+                                <li className={tab==='dashboard'?'active':''} onClick={()=>setTab('dashboard')}>
+                                    <i className="fa-solid fa-dashboard"></i> Dashboard
+                                </li>
+                                <li className={tab==='profile'?'active':''} onClick={()=>setTab('profile')}>
+                                    <i className="fa-solid fa-user"></i> My Profile
+                                </li>
+                                <li className={tab==='chat'?'active':''} onClick={()=>setTab('chat')}>
+                                    <i className="fa-solid fa-comments"></i> My Chats
+                                </li>
+                                <li className={tab==='post-wanted'?'active':''} onClick={()=>setTab('post-wanted')}>
+                                    <i className="fa-solid fa-plus-circle"></i> Post a Request
+                                </li>
+                                <li className={tab==='wanted'?'active':''} onClick={()=>setTab('wanted')}>
+                                    <i className="fa-solid fa-magnifying-glass-plus"></i> WantedList
+                                </li>
+                                <li className={tab==='listings'?'active':''} onClick={()=>setTab('listings')}>
+                                    <i className="fa-solid fa-list"></i> Listings
+                                </li>
+                                <li className={tab==='about'?'active':''} onClick={()=>setTab('about')}>
+                                    <i className="fa-solid fa-info-circle"></i> About
+                                </li>
+                                <li onClick={handleLogout} style={{color:'red', marginTop: '20px', borderTop: '1px solid var(--border)', paddingTop: '10px'}}>
+                                    <i className="fa-solid fa-sign-out-alt"></i> Logout
+                                </li>
+                            </ul>
+                        </div>
+                        <div className="content-area">
+                            {tab === 'dashboard' && <Dashboard user={user} />}
+                            {tab === 'profile' && (
+                                <MyProfile 
+                                    user={user}
+                                    editingProfile={editingProfile}
+                                    setEditingProfile={setEditingProfile}
+                                    profileData={profileData}
+                                    handleInputChange={handleInputChange}
+                                    handleProfileUpdate={handleProfileUpdate}
+                                />
+                            )}
+                            {tab === 'chat' && <Chat />}
+                            {tab === 'post-wanted' && <PostRequestForm user={user} setTab={setTab} />}
+                            {tab === 'wanted' && <WantedList user={user} />}
+                            {tab === 'listings' && <h2>My Listings (Coming Soon)</h2>}
+                            {tab === 'about' && <About />}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<ProfileApp />);
+    </script>
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.body.setAttribute('data-theme', savedTheme);
+        
+        setTimeout(() => {
+            const themeBtn = document.getElementById('theme-toggle');
+            if(themeBtn) {
+                const updateIcon = () => {
+                    const icon = themeBtn.querySelector('i');
+                    if(icon) {
+                        const currentTheme = document.body.getAttribute('data-theme');
+                        icon.className = currentTheme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+                    }
+                };
+                updateIcon();
+                themeBtn.addEventListener('click', () => {
+                    const newTheme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                    document.body.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                    updateIcon();
+                });
+            }
+        }, 100);
+    </script>
+</body>
+</html>

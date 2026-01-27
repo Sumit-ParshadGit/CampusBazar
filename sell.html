@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CampusBazar - Sell or Rent</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="page-sell">
+    <nav class="navbar">
+        <div class="logo">CampusBazar.</div>
+        <div class="nav-links">
+            <button id="theme-toggle" class="btn-icon"><i class="fa-solid fa-moon"></i></button>
+            <a href="profile.html" class="btn-outline">Back to Profile</a>
+        </div>
+    </nav>
+
+    <div class="form-container" style="max-width: 600px;">
+        <h2><i class="fa-solid fa-plus-circle"></i> List Item</h2>
+        
+        <div style="border: 2px dashed var(--border); padding: 2rem; text-align: center; margin-bottom: 1rem; cursor: pointer;">
+            <i class="fa-solid fa-camera" style="font-size: 2rem; color: var(--text-muted);"></i>
+            <p style="margin-top: 0.5rem;">Click to Upload Photos (AI Check)</p>
+        </div>
+
+        <label style="font-size:0.9rem; color:var(--text-muted);">Listing Type</label>
+        <select id="listingType" style="margin-top:0;">
+            <option value="buy">Sell Only</option>
+            <option value="rent">Rent Only</option>
+            <option value="both">Both (Sell & Rent)</option>
+        </select>
+
+        <input type="text" placeholder="Product Title">
+        
+        <div style="display:flex; gap:10px;">
+            <input type="number" placeholder="Selling Price (₹)" style="flex:1;">
+            <input type="number" placeholder="Rent Price (₹)" style="flex:1;">
+        </div>
+        
+        <select style="width:100%; padding:0.8rem; background:var(--bg); color:var(--text); border:1px solid var(--border); margin-bottom:1rem;">
+            <option>Condition: New</option>
+            <option>Condition: Good</option>
+            <option>Condition: Fair</option>
+        </select>
+
+        <textarea placeholder="Product Description..." rows="4" style="width:100%;"></textarea>
+
+        <h3 style="margin: 1.5rem 0 1rem 0; color: var(--primary);"><i class="fa-solid fa-location-dot"></i> Your Location</h3>
+        
+        <input type="text" placeholder="City">
+        <input type="text" placeholder="State">
+        <input type="text" placeholder="PIN Code">
+        
+        <h3 style="margin: 1.5rem 0 1rem 0; color: var(--primary);"><i class="fa-solid fa-phone"></i> Contact Information</h3>
+        
+        <input type="tel" placeholder="Phone Number">
+        <input type="email" placeholder="Email Address">
+
+        <button class="btn-primary" style="width:100%; padding: 1rem; margin-top: 1rem;">
+            <i class="fa-solid fa-upload"></i> Submit Listing
+        </button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CampusBazar - Product Options</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="page-details">
+    <nav class="navbar">
+        <div class="logo">CampusBazar.</div>
+        <div class="nav-links">
+            <button id="theme-toggle" class="btn-icon"><i class="fa-solid fa-moon"></i></button>
+            <a href="index.html" class="btn-outline">Close</a>
+        </div>
+    </nav>
+
+    <div class="form-container" style="max-width:600px; text-align:center;">
+        <h1 id="det-title">Product Name</h1>
+        <p style="color:var(--text-muted);">Select an option below:</p>
+        
+        <div style="height:200px; background:#111; margin:20px 0; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:50px; color: #555;">📦</div>
+        
+        <div style="display:flex; flex-direction:column; gap:10px;">
+            <button id="btn-buy-action" class="btn-primary" style="width:100%; padding: 1rem;">
+                Buy Now
+            </button>
+            
+            <button id="btn-rent-action" class="btn-rent" style="width:100%; padding: 1rem;">
+                Rent Now
+            </button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

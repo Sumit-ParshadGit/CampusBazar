@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CampusBazar - Login</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Specific styles to match the new login design */
+        .login-card {
+            max-width: 450px;
+            margin: 4rem auto;
+            padding: 2.5rem;
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        .login-card h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--text);
+        }
+        .login-card input {
+            margin-bottom: 1rem;
+            height: 50px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 1rem;
+        }
+        .btn-group button {
+            flex: 1;
+            height: 50px;
+            font-size: 1rem;
+        }
+        .divider {
+            margin: 2rem 0;
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+        }
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+            margin: 0 1rem;
+        }
+        .google-btn {
+            width: 100%;
+            height: 50px;
+            background: #db4437; /* Google Red */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+        .google-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        /* Fixed navbar for theme toggle */
+        .navbar-login {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar-login">
+        <div class="logo">CampusBazar.</div>
+        <button id="theme-toggle" class="btn-icon"><i class="fa-solid fa-moon"></i></button>
+    </nav>
+
+    <div class="login-card" id="loginContainer" style="margin-top: 6rem;">
+        <h2>Welcome Back</h2>
+        <form id="loginForm">
+            <input type="email" id="login-email" placeholder="Email Address" required>
+            <input type="password" placeholder="Password" required>
+            <div class="btn-group">
+                <button type="submit" class="btn-primary">Log In</button>
+                <button type="button" class="btn-outline" style="background: #e2e8f0; color: #94a3b8; cursor: not-allowed;">Sign Up</button>
+            </div>
+        </form>
+
+        <div class="divider">— OR —</div>
+
+        <button type="button" class="google-btn" onclick="handleGoogleLogin()">
+            <i class="fa-brands fa-google"></i> Continue with Google
+        </button>
+
+        <p style="margin-top: 2rem; font-size: 0.9rem;">
+            <a href="index.html" style="color: var(--text-muted);"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+        </p>
+    </div>
+
+    <div id="profileSetupModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h2 style="text-align:center; margin-bottom:1.5rem;">
+                <i class="fa-solid fa-user-plus"></i> Complete Your Profile
+            </h2>
+            <p style="text-align:center; color:var(--text-muted); margin-bottom:2rem;">
+                Please provide your campus details to continue
+            </p>
+            <form id="profileSetupForm">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="profile-name" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label>Roll Number *</label>
+                    <input type="text" id="profile-roll" placeholder="e.g., 2021CSE001" required>
+                </div>
+                <div class="form-group">
+                    <label>Branch *</label>
+                    <select id="profile-branch" required>
+                        <option value="">Select Branch</option>
+                        <option value="CSE">Computer Science & Engineering</option>
+                        <option value="ECE">Electronics & Communication</option>
+                        <option value="EE">Electrical Engineering</option>
+                        <option value="ME">Mechanical Engineering</option>
+                        <option value="CE">Civil Engineering</option>
+                        <option value="IT">Information Technology</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="address-fields">
+                    <div class="form-group">
+                        <label>Hostel/Block *</label>
+                        <input type="text" id="profile-hostel" placeholder="e.g., Block A" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Room Number *</label>
+                        <input type="text" id="profile-room" placeholder="e.g., 203" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" id="profile-phone" placeholder="+91 XXXXX XXXXX" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%; margin-top:1.5rem; padding:1rem;">
+                    <i class="fa-solid fa-check"></i> Complete Profile
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const profileSetupModal = document.getElementById('profileSetupModal');
+        const profileSetupForm = document.getElementById('profileSetupForm');
+        const loginContainer = document.getElementById('loginContainer');
+
+        function checkAndLogin() {
+            const existingProfile = localStorage.getItem('retrade_user_data');
+            if (existingProfile) {
+                window.location.href = getRedirectUrl();
+            } else {
+                loginContainer.style.display = 'none';
+                profileSetupModal.style.display = 'flex';
+            }
+        }
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            checkAndLogin();
+        });
+
+        function handleGoogleLogin() {
+            // Mocking Google Auth redirect
+            checkAndLogin();
+        }
+
+        profileSetupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const userData = {
+                name: document.getElementById('profile-name').value,
+                rollNumber: document.getElementById('profile-roll').value,
+                branch: document.getElementById('profile-branch').value,
+                hostel: document.getElementById('profile-hostel').value,
+                roomNumber: document.getElementById('profile-room').value,
+                phone: document.getElementById('profile-phone').value,
+                email: document.getElementById('login-email').value || "user@google.com"
+            };
+            localStorage.setItem('retrade_user_data', JSON.stringify(userData));
+            window.location.href = getRedirectUrl();
+        });
+
+        function getRedirectUrl() {
+            const params = new URLSearchParams(window.location.search);
+            const redirect = params.get('redirect');
+            const productId = params.get('productId');
+            const type = params.get('type');
+            if (redirect === 'checkout' && productId && type) {
+                return `checkout.html?id=${productId}&type=${type}`;
+            }
+            return 'profile.html';
+        }
+    </script>
+</body>
+</html>
