@@ -2,7 +2,7 @@
 // GLOBAL VARIABLES & DATA
 // =========================================
 const PRODUCTS = [
-    { id: 1, title: "Gaming Setup", price: "45,000", rentPrice: "2,000/month", seller: "User_101", condition: "Good", type: "both" },
+    { id: 1, title: "Table fan", price: "2,000", rentPrice: "500/month", seller: "User_101", condition: "Good", type: "both" },
     { id: 2, title: "iPhone 14", price: "60,000", rentPrice: null, seller: "User_202", condition: "Like New", type: "buy" },
     { id: 3, title: "DSLR Camera", price: "35,000", rentPrice: "800/day", seller: "User_303", condition: "Mint", type: "rent" },
     { id: 4, title: "Study Table", price: "3,500", rentPrice: null, seller: "User_303", condition: "Fair", type: "buy" }
